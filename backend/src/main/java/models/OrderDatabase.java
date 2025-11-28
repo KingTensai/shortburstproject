@@ -12,9 +12,9 @@ public class OrderDatabase {
   //      "jdbc:mysql://dt5.ehb.be:3306/2526JAVAADV015?useSSL=false&serverTimezone=UTC";
     //private static final String USER = "2526JAVAADV015";
     //private static final String PASSWORD = "18725463";
-private static final String URL = "jdbc:mysql://localhost:3306/yourdbname?useSSL=false&serverTimezone=UTC";
+private static final String URL = "jdbc:mysql://localhost:3306/localdb?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = "testpass";
 
     public static void createTablesIfNotExists() {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
