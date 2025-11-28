@@ -84,28 +84,5 @@ public class OrderResource {
                 .collect(Collectors.toList());
     }
 
-    // DTOs
-    public static class ProductSummaryDTO {
-        public Long productId;
-        public String name;
-        public int stock;
 
-        public ProductSummaryDTO(Long productId, String name, int stock) {
-            this.productId = productId;
-            this.name = name;
-            this.stock = stock;
-        }
-    }
-
-    public static class OrderStatisticsDTO {
-        public Long orderId;
-        public String location;
-        public double totalPrice;
-
-        public OrderStatisticsDTO(Long orderId, String location, double totalPrice) {
-            this.orderId = orderId;
-            this.location = location;
-            this.totalPrice = totalPrice;
-        }
-    }
 }

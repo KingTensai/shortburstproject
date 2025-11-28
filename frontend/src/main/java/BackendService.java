@@ -1,4 +1,6 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -7,15 +9,23 @@ import java.util.List;
 
 public class BackendService {
 
-    private static final String BASE_URL = "http://localhost:8080"; // your backend URL
-    private final ObjectMapper mapper = new ObjectMapper();
+    private static final String BASE_URL = "http://localhost:8080"; // adjust if needed
+    private final ObjectMapper mapper;
+
+    public BackendService() {
+        mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule()); // support LocalDateTime
+    }
 
     public List<OrderStatisticsDTO> getOrderStatistics() throws IOException {
         URL url = new URL(BASE_URL + "/orders/statistics");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
 
-        return Arrays.asList(mapper.readValue(conn.getInputStream(), OrderStatisticsDTO[].class));
+        OrderStatisticsDTO[] arr =
+                mapper.readValue(conn.getInputStream(), OrderStatisticsDTO[].class);
+
+        return Arrays.asList(arr);
     }
 
     public List<ProductSummaryDTO> getProductStatistics() throws IOException {
@@ -23,6 +33,9 @@ public class BackendService {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
 
-        return Arrays.asList(mapper.readValue(conn.getInputStream(), ProductSummaryDTO[].class));
+        ProductSummaryDTO[] arr =
+                mapper.readValue(conn.getInputStream(), ProductSummaryDTO[].class);
+
+        return Arrays.asList(arr);
     }
 }
