@@ -1,6 +1,5 @@
-package endpoints;
+package src.main.java.endpoints;
 
-import dto.OrderRequestDTO;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 public class OrderResource {
 
     @Inject
-    ProductRepository productRepo;
+    endpoints.ProductRepository productRepo;
 
     @Inject
     StockRepository stockRepo;
@@ -28,7 +27,6 @@ public class OrderResource {
     @Inject
     OrderRepository orderRepo;
 
-    /** Process an incoming order */
     @POST
     @Path("orders")
     @Transactional
@@ -62,7 +60,6 @@ public class OrderResource {
         return Response.status(Response.Status.CREATED).entity(order).build();
     }
 
-    /** Get summary of all orders */
     @GET
     @Path("orders/statistics")
     public List<OrderStatisticsDTO> getOrderStatistics() {
@@ -71,7 +68,6 @@ public class OrderResource {
                 .collect(Collectors.toList());
     }
 
-    /** Get summary of all products with stock */
     @GET
     @Path("products/statistics")
     public List<ProductSummaryDTO> getProductStatistics() {

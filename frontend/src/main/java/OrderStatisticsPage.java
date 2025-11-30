@@ -3,37 +3,39 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.ChoiceRenderer;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
 public class OrderStatisticsPage extends BasePage {
 
-    @Inject
-    BackendService backendService; // Calls your REST backend
+    private final BackendService backendService = new BackendService();
 
     public OrderStatisticsPage() {
-        // Feedback panel
         add(new FeedbackPanel("feedback"));
 
-        // Dropdown to select product
-        List<ProductSummaryDTO> products = backendService.getProductStatistics();
+        List<ProductSummaryDTO> products = null;
+        try {
+            products = backendService.getProductStatistics();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         IModel<ProductSummaryDTO> selectedProduct = new Model<>(null);
+
         DropDownChoice<ProductSummaryDTO> productChoice = new DropDownChoice<>(
                 "productFilter",
                 selectedProduct,
                 products,
-                new ChoiceRenderer<>("name", "productId")
+                new ChoiceRenderer<ProductSummaryDTO>("name", "productId")
         );
         productChoice.setNullValid(true);
         add(productChoice);
 
-        // Chart data spans
         Label chartLabels = new Label("chartLabels", Model.of(""));
         Label chartData = new Label("chartData", Model.of(""));
         chartLabels.setOutputMarkupId(true);
@@ -41,7 +43,7 @@ public class OrderStatisticsPage extends BasePage {
         add(chartLabels);
         add(chartData);
 
-        // Update chart when dropdown changes
+        // Update chart on dropdown change
         productChoice.add(new AjaxFormComponentUpdatingBehavior("change") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
@@ -49,15 +51,21 @@ public class OrderStatisticsPage extends BasePage {
             }
         });
 
-        // Load initial chart with all orders
+        // Load initial chart
         loadChartData(null, chartLabels, chartData, null);
     }
 
-    private void loadChartData(ProductSummaryDTO product, Label labels, Label data, AjaxRequestTarget target) {
-        try {
-            List<OrderStatisticsDTO> orders = backendService.getOrderStatistics(product != null ? product.productId : null);
+    private void loadChartData(ProductSummaryDTO product,
+                               Label labels,
+                               Label data,
+                               AjaxRequestTarget target) {
 
-            // Prepare chart labels (dates) and data (count)
+        try {
+            // Call existing service method
+            List<OrderStatisticsDTO> orders =
+                    backendService.getOrderStatistics(product != null ? product.getProductId() : null);
+
+            // Group by location and count
             Map<String, Long> ordersPerLocation = orders.stream()
                     .collect(Collectors.groupingBy(OrderStatisticsDTO::getLocation, Collectors.counting()));
 

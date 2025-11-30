@@ -9,6 +9,7 @@
 <body>
 <div class="container mt-5">
     <h1>Order Statistics</h1>
+
     <div wicket:id="feedback"></div>
 
     <div class="mb-3">
@@ -16,7 +17,7 @@
         <select class="form-select" wicket:id="productFilter"></select>
     </div>
 
-    <canvas id="orderChart" width="800" height="400"></canvas>
+    <canvas id="orderChart" width="900" height="400"></canvas>
 
     <span wicket:id="chartLabels" style="display:none"></span>
     <span wicket:id="chartData" style="display:none"></span>
@@ -24,16 +25,16 @@
 
 <script>
     const ctx = document.getElementById('orderChart').getContext('2d');
+
     let orderChart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: [],
             datasets: [{
-                label: 'Number of Orders',
+                label: 'Total Sales (€)',
                 data: [],
-                backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
+                borderWidth: 2,
+                tension: 0.2
             }]
         },
         options: {

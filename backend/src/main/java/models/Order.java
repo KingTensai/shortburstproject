@@ -1,6 +1,6 @@
-package models;
+package src.main.java.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

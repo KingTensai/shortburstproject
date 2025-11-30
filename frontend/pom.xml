@@ -21,53 +21,69 @@
         <jackson.version>2.17.2</jackson.version>
     </properties>
 
-            <dependencies>
-                <!-- Apache Wicket core -->
-                <dependency>
-                    <groupId>org.apache.wicket</groupId>
-                    <artifactId>wicket-core</artifactId>
-                    <version>${wicket.version}</version>
-                </dependency>
+    <dependencies>
+        <!-- Wicket Core + Extensions -->
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-core</artifactId>
+            <version>${wicket.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-extensions</artifactId>
+            <version>${wicket.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.wicket</groupId>
+            <artifactId>wicket-cdi</artifactId>
+            <version>${wicket.version}</version>
+        </dependency>
 
+        <!-- CDI -->
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.weld.servlet</groupId>
+            <artifactId>weld-servlet-shaded</artifactId>
+            <version>5.1.2.Final</version>
+        </dependency>
 
-                <!-- Wicket extensions (optional, for advanced components) -->
-                <dependency>
-                    <groupId>org.apache.wicket</groupId>
-                    <artifactId>wicket-extensions</artifactId>
-                    <version>${wicket.version}</version>
-                </dependency>
+        <!-- Jackson JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
 
-                <!-- Jetty server for running locally -->
-                <dependency>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-server</artifactId>
-                    <version>${jetty.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>org.eclipse.jetty</groupId>
-                    <artifactId>jetty-servlet</artifactId>
-                    <version>${jetty.version}</version>
-                </dependency>
-
-                <!-- JSON processing -->
-                <dependency>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                    <version>${jackson.version}</version>
-                </dependency>
-
-                <dependency>
-                    <groupId>jakarta.ws.rs</groupId>
-                    <artifactId>jakarta.ws.rs-api</artifactId>
-                    <version>3.1.0</version>
-                </dependency>
-            </dependencies>
-
-
+        <!-- Jetty -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
-            <!-- Jetty plugin to run Wicket app -->
+            <!-- Jetty plugin for running locally -->
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
@@ -88,16 +104,6 @@
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                     <parameters>true</parameters>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-maven-plugin</artifactId>
-                <version>11.0.23</version>
-                <configuration>
-
-                    <webAppSourceDirectory>${project.basedir}/src/main/webapp</webAppSourceDirectory>
-
                 </configuration>
             </plugin>
         </plugins>

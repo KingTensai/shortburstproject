@@ -1,4 +1,4 @@
-package endpoints;
+package src.main.java.endpoints;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;

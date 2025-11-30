@@ -1,4 +1,4 @@
-package models;
+package src.main.java.models;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -75,7 +75,7 @@ private static final String URL = "jdbc:mysql://localhost:3306/localdb?useSSL=fa
             e.printStackTrace();
         }
     }
-
+    //For testing purposes only, now using panache repos
     public static void main(String[] args) {
         createTablesIfNotExists();
     }

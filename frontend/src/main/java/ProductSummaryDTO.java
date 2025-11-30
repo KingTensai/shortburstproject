@@ -1,7 +1,15 @@
-public class ProductSummaryDTO {
-    public Long productId;
-    public String name;
-    public int stock;
+import java.io.Serializable;
+
+public class ProductSummaryDTO implements Serializable {
+    private Long productId;
+    private String name;
+    private int stock;
+    private String location;
 
     public ProductSummaryDTO() { }
+
+    public Long getProductId() { return productId; }
+    public String getName() { return name; }
+    public int getStock() { return stock; }
+    public String getLocation() { return location; }
 }
