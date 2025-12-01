@@ -38,6 +38,11 @@
             <artifactId>wicket-cdi</artifactId>
             <version>${wicket.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootstrap</artifactId>
+            <version>5.3.3</version>
+        </dependency>
 
         <!-- CDI -->
         <dependency>

@@ -1,7 +1,8 @@
-package src.main.java.models;
-
+package models;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,19 +13,19 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    // persisted value optional — we compute total from products
     private Double price;
 
     @Column(nullable = false)
     private String orderLocation;
+
+    private LocalDateTime orderDate;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<OrderProduct> products = new ArrayList<>();
 
     public Order() { }
 
-    public Order(String orderLocation) {
+    public Order(String orderLocation, LocalDateTime orderDate) {
         this.orderLocation = orderLocation;
     }
 
@@ -68,5 +69,13 @@ public class Order {
         if (op == null) return;
         products.remove(op);
         op.setOrder(null);
+    }
+
+    public LocalDateTime getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(LocalDateTime orderDate) {
+        this.orderDate = orderDate;
     }
 }

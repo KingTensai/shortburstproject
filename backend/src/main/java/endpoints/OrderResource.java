@@ -1,5 +1,8 @@
-package src.main.java.endpoints;
+package endpoints;
 
+import dto.OrderRequestDTO;
+import dto.OrderStatisticsDTO;
+import dto.ProductSummaryDTO;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -10,6 +13,7 @@ import models.OrderProduct;
 import models.Product;
 import models.Stock;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +23,7 @@ import java.util.stream.Collectors;
 public class OrderResource {
 
     @Inject
-    endpoints.ProductRepository productRepo;
+    ProductRepository productRepo;
 
     @Inject
     StockRepository stockRepo;
@@ -31,14 +35,23 @@ public class OrderResource {
     @Path("orders")
     @Transactional
     public Response createOrder(OrderRequestDTO request) {
-        Order order = new Order(request.orderLocation);
+        Order order = new Order(request.orderLocation, LocalDateTime.now());
 
         for (OrderRequestDTO.OrderProductDTO dto : request.products) {
             Product product = productRepo.findById(dto.productId);
+
             if (product == null) {
-                return Response.status(Response.Status.BAD_REQUEST)
-                        .entity("Product ID " + dto.productId + " not found")
-                        .build();
+                product = new Product();
+                product.setName(dto.productName);
+                product.setDescription(dto.productDescription);
+                product.setPrice(dto.productPrice);
+                product.setSku(dto.productName.replaceAll("\\s","").toUpperCase() + System.currentTimeMillis());
+                productRepo.persist(product);
+
+                Stock stock = new Stock();
+                stock.setProduct(product);
+                stock.setQuantity(dto.quantity);
+                stockRepo.persist(stock);
             }
 
             Stock stock = stockRepo.findByProduct(product);
@@ -64,7 +77,7 @@ public class OrderResource {
     @Path("orders/statistics")
     public List<OrderStatisticsDTO> getOrderStatistics() {
         return orderRepo.listAll().stream()
-                .map(o -> new OrderStatisticsDTO(o.getId(), o.getOrderLocation(), o.getTotalPrice()))
+                .map(o -> new OrderStatisticsDTO(o.getId(), o.getOrderLocation(), o.getTotalPrice(),o.getOrderDate()))
                 .collect(Collectors.toList());
     }
 

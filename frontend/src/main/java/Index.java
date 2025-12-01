@@ -4,6 +4,8 @@ public class Index extends BasePage {
 
     public Index() {
         // Welcome message
+        super();
+        addOrReplace(new Label("pageTitle", getPageTitle()));
         body.add(new Label("welcomeMessage", "Welcome to Shortburst 2025 Dashboard!"));
     }
 
@@ -11,4 +13,7 @@ public class Index extends BasePage {
     protected String getPageTitle() {
         return "Dashboard";
     }
+
+
+
 }

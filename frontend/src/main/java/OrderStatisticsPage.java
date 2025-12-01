@@ -1,5 +1,6 @@
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -17,33 +18,37 @@ public class OrderStatisticsPage extends BasePage {
     private final BackendService backendService = new BackendService();
 
     public OrderStatisticsPage() {
-        add(new FeedbackPanel("feedback"));
+        super();
+        addOrReplace(new Label("pageTitle", getPageTitle()));
+        WebMarkupContainer body = (WebMarkupContainer) get("body");
+        body.add(new FeedbackPanel("feedback"));
 
-        List<ProductSummaryDTO> products = null;
+        List<ProductSummaryDTO> products;
         try {
             products = backendService.getProductStatistics();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
         IModel<ProductSummaryDTO> selectedProduct = new Model<>(null);
 
         DropDownChoice<ProductSummaryDTO> productChoice = new DropDownChoice<>(
                 "productFilter",
                 selectedProduct,
                 products,
-                new ChoiceRenderer<ProductSummaryDTO>("name", "productId")
+                new ChoiceRenderer<>("name", "productId")
         );
         productChoice.setNullValid(true);
-        add(productChoice);
+
+        body.add(productChoice);
 
         Label chartLabels = new Label("chartLabels", Model.of(""));
         Label chartData = new Label("chartData", Model.of(""));
         chartLabels.setOutputMarkupId(true);
         chartData.setOutputMarkupId(true);
-        add(chartLabels);
-        add(chartData);
+        body.add(chartLabels);
+        body.add(chartData);
 
-        // Update chart on dropdown change
         productChoice.add(new AjaxFormComponentUpdatingBehavior("change") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
@@ -51,7 +56,6 @@ public class OrderStatisticsPage extends BasePage {
             }
         });
 
-        // Load initial chart
         loadChartData(null, chartLabels, chartData, null);
     }
 
@@ -61,11 +65,9 @@ public class OrderStatisticsPage extends BasePage {
                                AjaxRequestTarget target) {
 
         try {
-            // Call existing service method
             List<OrderStatisticsDTO> orders =
                     backendService.getOrderStatistics(product != null ? product.getProductId() : null);
 
-            // Group by location and count
             Map<String, Long> ordersPerLocation = orders.stream()
                     .collect(Collectors.groupingBy(OrderStatisticsDTO::getLocation, Collectors.counting()));
 

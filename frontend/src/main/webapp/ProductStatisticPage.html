@@ -1,47 +1,29 @@
-<html xmlns:wicket="http://wicket.apache.org">
-<head>
-    <title>Product Statistics</title>
+<wicket:extend xmlns:wicket="http://www.w3.org/1999/xhtml">
+
+    <div wicket:id="feedback"></div>
+
+    <h2>Product Stock</h2>
+    <canvas id="productChart" width="600" height="400"></canvas>
+
+    <span wicket:id="chartLabels" style="display:none"></span>
+    <span wicket:id="chartData" style="display:none"></span>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+    <script>
+        const labels = document.querySelector("span[wicket\\:id='chartLabels']").innerText.split(',');
+        const dataValues = document.querySelector("span[wicket\\:id='chartData']").innerText.split(',');
 
-<div wicket:id="feedback"></div>
-
-<h2>Product Stock</h2>
-<canvas id="productChart" width="600" height="400"></canvas>
-
-<span wicket:id="chartLabels" style="display:none"></span>
-<span wicket:id="chartData" style="display:none"></span>
-
-<script>
-    const labels = [<span wicket:id="chartLabels"></span>];
-    const dataValues = [<span wicket:id="chartData"></span>];
-
-    const data = {
-        labels: labels,
-        datasets: [{
-            label: 'Stock Quantity',
-            data: dataValues,
-            backgroundColor: 'rgba(255, 159, 64, 0.6)',
-            borderColor: 'rgba(255, 159, 64, 1)',
-            borderWidth: 1
-        }]
-    };
-
-    new Chart(
-        document.getElementById('productChart'),
-        {
+        new Chart(document.getElementById('productChart'), {
             type: 'bar',
-            data: data,
-            options: {
-                responsive: true,
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        }
-    );
-</script>
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Stock Quantity',
+                    data: dataValues
+                }]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+    </script>
 
-</body>
-</html>
+</wicket:extend>

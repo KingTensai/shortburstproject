@@ -9,7 +9,7 @@ import java.util.List;
 
 public class BackendService {
 
-    private static final String BASE_URL = "http://localhost:8080";
+    private static final String BASE_URL = "http://localhost:9090";
     private final ObjectMapper mapper;
 
     public BackendService() {

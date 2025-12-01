@@ -15,7 +15,7 @@ public class Product {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String sku;
+    private String sku; // optional, can be set from DTO if you have one
 
     @Column(nullable = false)
     private String name;
@@ -27,13 +27,13 @@ public class Product {
 
     private String category;
 
-    private String location; // e.g., warehouse location
+    private String location; // warehouse location
 
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Stock stock;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonIgnore // avoid serializing orderProducts by default
+    @JsonIgnore
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
     private LocalDateTime createdAt;
@@ -42,16 +42,17 @@ public class Product {
 
     public Product() { }
 
-    public Product(String sku, String name, double price) {
-        this.sku = sku;
+    // Constructor matching the DTO fields
+    public Product(Long id, String name, String description, double price) {
+        if (id != null) this.id = id;
         this.name = name;
+        this.description = description;
         this.price = price;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
 
-    /* Getters / setters */
-
+    /* Getters / Setters */
     public Long getId() { return id; }
 
     public String getSku() { return sku; }
