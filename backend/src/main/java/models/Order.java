@@ -27,18 +27,14 @@ public class Order {
 
     public Order(String orderLocation, LocalDateTime orderDate) {
         this.orderLocation = orderLocation;
+        this.orderDate = orderDate;
     }
 
-    /**
-     * Compute the total price from line items on the fly.
-     */
     public double getTotalPrice() {
         return products.stream()
                 .mapToDouble(OrderProduct::getPrice)
                 .sum();
     }
-
-    /* Getters / setters */
 
     public Long getId() { return id; }
 

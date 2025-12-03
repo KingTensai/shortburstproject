@@ -16,12 +16,16 @@ public abstract class BasePage extends WebPage {
         body = new WebMarkupContainer("body");
         body.setOutputMarkupId(true);
         add(body);
+        add(new BookmarkablePageLink<>("dashboardLink", Index.class));
         add(new BookmarkablePageLink<>("orderStatsLink", OrderStatisticsPage.class));
         add(new BookmarkablePageLink<>("productStatsLink", ProductStatisticsPage.class));
-        add(new Label("pageTitle", Model.of("Home")));
 
     }
-
+    @Override
+    protected void onInitialize() {
+        super.onInitialize();
+        add(new Label("pageTitle", Model.of(getPageTitle())));
+    }
     protected abstract String getPageTitle();
 
     @Override

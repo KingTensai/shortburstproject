@@ -20,7 +20,7 @@ public class OrderStatisticsPage extends BasePage {
 
     public OrderStatisticsPage() {
         super();
-        addOrReplace(new Label("pageTitle", getPageTitle()));
+        //
         WebMarkupContainer body = (WebMarkupContainer) get("body");
         body.add(new FeedbackPanel("feedback"));
 

@@ -1,11 +1,11 @@
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,10 +17,8 @@ public class ProductStatisticsPage extends BasePage {
 
     public ProductStatisticsPage() {
         super();
-
-        addOrReplace(new Label("pageTitle", getPageTitle()));
-
-        this.body.add(new FeedbackPanel("feedback"));
+        WebMarkupContainer body = (WebMarkupContainer) get("body");
+        body.add(new FeedbackPanel("feedback").setOutputMarkupId(true));
 
         BackendService backendService = new BackendService();
         List<ProductSummaryDTO> allProducts;
@@ -45,21 +43,21 @@ public class ProductStatisticsPage extends BasePage {
         );
         productFilter.setNullValid(true);
         productFilter.setOutputMarkupId(true);
-        this.body.add(productFilter);
+        body.add(productFilter);
 
         chartLabels = new Label("chartLabels", "");
         chartLabels.setEscapeModelStrings(false);
         chartLabels.setOutputMarkupId(true);
-        this.body.add(chartLabels);
+        body.add(chartLabels);
 
         chartData = new Label("chartData", "");
         chartData.setEscapeModelStrings(false);
         chartData.setOutputMarkupId(true);
-        this.body.add(chartData);
+        body.add(chartData);
 
         updateChart(allProducts, selectedProduct.getObject(), null);
-        final List<ProductSummaryDTO> allProductsFinal = allProducts;
 
+        final List<ProductSummaryDTO> allProductsFinal = allProducts;
         productFilter.add(new AjaxFormComponentUpdatingBehavior("change") {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
@@ -86,7 +84,7 @@ public class ProductStatisticsPage extends BasePage {
                 .collect(Collectors.joining(","));
 
         String salesData = filtered.stream()
-                .map(p -> String.valueOf(p.getStock())) // Using getStock() for data
+                .map(p -> String.valueOf(p.getStock()))
                 .collect(Collectors.joining(","));
 
         chartLabels.setDefaultModelObject(labels);

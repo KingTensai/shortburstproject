@@ -1,4 +1,7 @@
-<wicket:head xmlns:wicket="http://www.w3.org/1999/html">
+<!DOCTYPE html>
+<html xmlns:wicket="http://www.w3.org/1999/xhtml">
+
+<wicket:head>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1"></script>
@@ -7,15 +10,14 @@
         let orderChart;
 
         document.addEventListener('DOMContentLoaded', function () {
-
             const ctx = document.getElementById('orderChart').getContext('2d');
             orderChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: [], // ISO date strings
+                    labels: [],
                     datasets: [{
                         label: 'Total Sales (€)',
-                        data: [], // numbers
+                        data: [],
                         borderWidth: 2,
                         tension: 0.2,
                         fill: false
@@ -26,21 +28,12 @@
                     scales: {
                         x: {
                             type: 'time',
-                            time: {
-                                unit: 'day',
-                                tooltipFormat: 'DD T'
-                            },
-                            title: {
-                                display: true,
-                                text: 'Date'
-                            }
+                            time: { unit: 'day', tooltipFormat: 'DD T' },
+                            title: { display: true, text: 'Date' }
                         },
                         y: {
                             beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Total Sales (€)'
-                            }
+                            title: { display: true, text: 'Total Sales (€)' }
                         }
                     }
                 }
@@ -49,36 +42,20 @@
             window.updateOrderChart = function (labelId, dataId) {
                 const labelsEl = document.getElementById(labelId);
                 const dataEl = document.getElementById(dataId);
+                if (!labelsEl || !dataEl || !orderChart) return;
 
-                if (!labelsEl || !dataEl || !orderChart) {
-                    console.warn("Chart elements missing, skipping update.");
-                    return;
-                }
+                const labels = labelsEl.innerText ? labelsEl.innerText.split(',').map(l => l.trim()) : [];
+                const data = dataEl.innerText ? dataEl.innerText.split(',').map(Number) : [];
 
-                // Use ISO strings directly
-                const labels = labelsEl.innerText
-                    ? labelsEl.innerText.split(',').map(l => l.trim())
-                    : [];
-
-                const data = dataEl.innerText
-                    ? dataEl.innerText.split(',').map(Number)
-                    : [];
-
-                // Build dataset in {x: date, y: value} format
-                const dataset = labels.map((date, idx) => ({
-                    x: date,
-                    y: data[idx] || 0
-                }));
-                console.log(dataset)
+                const dataset = labels.map((date, idx) => ({ x: date, y: data[idx] || 0 }));
                 orderChart.data.datasets[0].data = dataset;
                 orderChart.update();
             };
         });
     </script>
-
 </wicket:head>
 
-<wicket:extend xmlns:wicket="http://www.w3.org/1999/xhtml">
+<wicket:extend>
     <div class="container mt-5">
         <h1>Order Statistics</h1>
 
@@ -95,6 +72,6 @@
         <span wicket:id="chartData" style="display:none"></span>
         <canvas id="orderChart"></canvas>
     </div>
-
-
 </wicket:extend>
+
+</html>
