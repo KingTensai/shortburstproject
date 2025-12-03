@@ -13,12 +13,13 @@ public abstract class BasePage extends WebPage {
     protected WebMarkupContainer body;
 
     public BasePage() {
-        add(new BookmarkablePageLink<>("orderStatsLink", OrderStatisticsPage.class));
-        add(new BookmarkablePageLink<>("productStatsLink", ProductStatisticsPage.class));
-        add(new Label("pageTitle", Model.of("Home")));
         body = new WebMarkupContainer("body");
         body.setOutputMarkupId(true);
         add(body);
+        add(new BookmarkablePageLink<>("orderStatsLink", OrderStatisticsPage.class));
+        add(new BookmarkablePageLink<>("productStatsLink", ProductStatisticsPage.class));
+        add(new Label("pageTitle", Model.of("Home")));
+
     }
 
     protected abstract String getPageTitle();
@@ -27,12 +28,10 @@ public abstract class BasePage extends WebPage {
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
 
-        // Local CSS served via Wicket
         response.render(CssHeaderItem.forReference(
                 new PackageResourceReference(BasePage.class, "css/bootstrap.min.css")
         ));
 
-        // Local JS served via Wicket
         response.render(JavaScriptHeaderItem.forReference(
                 new PackageResourceReference(BasePage.class, "js/bootstrap.bundle.min.js")
         ));

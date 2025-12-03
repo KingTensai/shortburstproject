@@ -28,12 +28,8 @@ public class BackendService {
         return Arrays.asList(arr);
     }
 
-    public List<OrderStatisticsDTO> getOrderStatistics(Long productId) throws IOException {
+    public List<OrderStatisticsDTO> getOrderStatistics() throws IOException {
         String endpoint = BASE_URL + "/orders/statistics";
-
-        if (productId != null) {
-            endpoint += "?productId=" + productId;
-        }
 
         HttpURLConnection conn = (HttpURLConnection)
                 new URL(endpoint).openConnection();

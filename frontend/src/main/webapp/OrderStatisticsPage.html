@@ -1,3 +1,83 @@
+<wicket:head xmlns:wicket="http://www.w3.org/1999/html">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1"></script>
+
+    <script>
+        let orderChart;
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const ctx = document.getElementById('orderChart').getContext('2d');
+            orderChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [], // ISO date strings
+                    datasets: [{
+                        label: 'Total Sales (€)',
+                        data: [], // numbers
+                        borderWidth: 2,
+                        tension: 0.2,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day',
+                                tooltipFormat: 'DD T'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Total Sales (€)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            window.updateOrderChart = function (labelId, dataId) {
+                const labelsEl = document.getElementById(labelId);
+                const dataEl = document.getElementById(dataId);
+
+                if (!labelsEl || !dataEl || !orderChart) {
+                    console.warn("Chart elements missing, skipping update.");
+                    return;
+                }
+
+                // Use ISO strings directly
+                const labels = labelsEl.innerText
+                    ? labelsEl.innerText.split(',').map(l => l.trim())
+                    : [];
+
+                const data = dataEl.innerText
+                    ? dataEl.innerText.split(',').map(Number)
+                    : [];
+
+                // Build dataset in {x: date, y: value} format
+                const dataset = labels.map((date, idx) => ({
+                    x: date,
+                    y: data[idx] || 0
+                }));
+                console.log(dataset)
+                orderChart.data.datasets[0].data = dataset;
+                orderChart.update();
+            };
+        });
+    </script>
+
+</wicket:head>
+
 <wicket:extend xmlns:wicket="http://www.w3.org/1999/xhtml">
     <div class="container mt-5">
         <h1>Order Statistics</h1>
@@ -5,44 +85,16 @@
         <div wicket:id="feedback"></div>
 
         <div class="mb-3">
-            <label>Filter by Product:</label>
+            <label>Filter by location:</label>
             <label>
                 <select class="form-select" wicket:id="productFilter"></select>
             </label>
         </div>
 
-        <canvas id="orderChart" width="900" height="400"></canvas>
-
         <span wicket:id="chartLabels" style="display:none"></span>
         <span wicket:id="chartData" style="display:none"></span>
+        <canvas id="orderChart"></canvas>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctx = document.getElementById('orderChart').getContext('2d');
-        let orderChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'Total Sales (€)',
-                    data: [],
-                    borderWidth: 2,
-                    tension: 0.2
-                }]
-            },
-            options: { responsive: true, scales: { y: { beginAtZero: true } } }
-        });
 
-        function updateOrderChart() {
-            const labels = document.getElementById('chartLabels').innerText.split(',');
-            const data = document.getElementById('chartData').innerText.split(',');
-
-            orderChart.data.labels = labels;
-            orderChart.data.datasets[0].data = data;
-            orderChart.update();
-        }
-
-        document.addEventListener('DOMContentLoaded', updateOrderChart);
-    </script>
 </wicket:extend>

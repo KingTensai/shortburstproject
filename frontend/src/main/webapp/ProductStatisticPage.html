@@ -1,29 +1,65 @@
-<wicket:extend xmlns:wicket="http://www.w3.org/1999/xhtml">
-
-    <div wicket:id="feedback"></div>
-
-    <h2>Product Stock</h2>
-    <canvas id="productChart" width="600" height="400"></canvas>
-
-    <span wicket:id="chartLabels" style="display:none"></span>
-    <span wicket:id="chartData" style="display:none"></span>
-
+<wicket:head xmlns:wicket="http://www.w3.org/1999/html">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const labels = document.querySelector("span[wicket\\:id='chartLabels']").innerText.split(',');
-        const dataValues = document.querySelector("span[wicket\\:id='chartData']").innerText.split(',');
+        let productChart;
 
-        new Chart(document.getElementById('productChart'), {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Stock Quantity',
-                    data: dataValues
-                }]
-            },
-            options: { responsive: true, scales: { y: { beginAtZero: true } } }
-        });
+        function updateProductChart(labelsId, dataId) {
+            const labels = document.getElementById(labelsId).innerText.split(',');
+            const dataValues = document.getElementById(dataId).innerText.split(',').map(Number);
+
+            const ctx = document.getElementById('productChart').getContext('2d');
+
+            if (productChart) {
+                productChart.data.labels = labels;
+                productChart.data.datasets[0].data = dataValues;
+                productChart.update();
+            } else {
+                productChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Sales',
+                            data: dataValues,
+                            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            }
+        }
+
+        updateProductChart(
+            document.querySelector("span[wicket\\:id='chartLabels']").id,
+            document.querySelector("span[wicket\\:id='chartData']").id
+        );
     </script>
+</wicket:head>
 
+<wicket:extend xmlns:wicket="http://www.w3.org/1999/xhtml">
+    <div class="container mt-5">
+
+        <h2>Product Statistics</h2>
+
+        <div wicket:id="feedback"></div>
+
+        <div class="mb-3">
+            <label>Filter by product:</label>
+            <label>
+                <select class="form-select" wicket:id="productFilter"></select>
+            </label>
+        </div>
+
+        <canvas id="productChart" width="600" height="400"></canvas>
+
+        <span wicket:id="chartLabels" style="display:none"></span>
+        <span wicket:id="chartData" style="display:none"></span>
+
+    </div>
 </wicket:extend>
+
